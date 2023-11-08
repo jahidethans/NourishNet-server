@@ -44,6 +44,14 @@ async function run() {
       res.send(result);
     })
 
+    // get user based food for manage my food page
+    app.get('/managefoods', async(req, res)=>{
+      console.log(req.query.email);
+     
+      const result = await foodCollection.find(query).toArray();
+      res.send(result)
+    })
+
     // add one food
     app.post('/allfoods', async(req, res)=>{
       const newFood = req.body;
