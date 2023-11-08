@@ -40,8 +40,8 @@ async function run() {
    // show user-based requested foods
 app.get('/ownrequests', async (req, res) => {
   let query = {};
-  if (req.query?.userEmail) {
-    query = { userEmail: req.query.userEmail };
+  if (req.query?.requestorEmail) {
+    query = { requestorEmail: req.query.requestorEmail};
   }
   const result = await requestCollection.find(query).toArray();
   res.send(result);
@@ -55,6 +55,16 @@ app.get('/requests', async (req, res) => {
   const result = await requestCollection.find(query).toArray();
   res.send(result);
 });
+
+// show each item to manage sperately
+app.get('/requests/:id', async(req, res)=>{
+  const id = req.params.id;
+  if (id) {
+    query = { foodId: id };
+  } 
+  const result = await requestCollection.find(query).toArray();
+  res.send(result);
+})
 
 
     // show specific food detail
