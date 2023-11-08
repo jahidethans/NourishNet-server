@@ -38,10 +38,19 @@ async function run() {
     })
 
    // show user-based requested foods
-app.get('/requests', async (req, res) => {
+app.get('/ownrequests', async (req, res) => {
   let query = {};
   if (req.query?.userEmail) {
     query = { userEmail: req.query.userEmail };
+  }
+  const result = await requestCollection.find(query).toArray();
+  res.send(result);
+});
+   // show user-based requested foods for managing
+app.get('/requests', async (req, res) => {
+  let query = {};
+  if (req.query?.donatorEmail) {
+    query = { donatorEmail: req.query.donatorEmail };
   }
   const result = await requestCollection.find(query).toArray();
   res.send(result);
