@@ -36,12 +36,17 @@ async function run() {
         const result = await cursor.toArray();
         res.send(result);
     })
-    // show all requested foods
-    app.get('/requests', async(req, res)=>{
-        const cursor = requestCollection.find();
-        const result = await cursor.toArray();
-        res.send(result);
-    })
+
+   // show user-based requested foods
+app.get('/requests', async (req, res) => {
+  let query = {};
+  if (req.query?.userEmail) {
+    query = { userEmail: req.query.userEmail };
+  }
+  const result = await requestCollection.find(query).toArray();
+  res.send(result);
+});
+
 
     // show specific food detail
     app.get('/allfoods/:id', async(req, res)=>{
@@ -67,6 +72,7 @@ async function run() {
       const result = await foodCollection.insertOne(newFood);
       res.send(result);
     })
+    
     // add one request
     app.post('/requests', async(req, res)=>{
       const newFood = req.body;
