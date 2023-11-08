@@ -47,7 +47,10 @@ async function run() {
     // get user based food for manage my food page
     app.get('/managefoods', async(req, res)=>{
       console.log(req.query.email);
-     
+      let query = {};
+      if(req.query?.email){
+        query = {email: req.query.email}
+      }
       const result = await foodCollection.find(query).toArray();
       res.send(result)
     })
