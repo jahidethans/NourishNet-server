@@ -27,11 +27,18 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
-    const foodCollection = client.db('nourishNet').collection('allfoods')
+    const foodCollection = client.db('nourishNet').collection('allfoods');
+    const requestCollection = client.db('nourishNet').collection('requests')
 
     // show all available foods
     app.get('/allfoods', async(req, res)=>{
         const cursor = foodCollection.find();
+        const result = await cursor.toArray();
+        res.send(result);
+    })
+    // show all requested foods
+    app.get('/requests', async(req, res)=>{
+        const cursor = requestCollection.find();
         const result = await cursor.toArray();
         res.send(result);
     })
@@ -46,7 +53,6 @@ async function run() {
 
     // get user based food for manage my food page
     app.get('/managefoods', async(req, res)=>{
-      console.log(req.query.email);
       let query = {};
       if(req.query?.email){
         query = {email: req.query.email}
@@ -59,6 +65,12 @@ async function run() {
     app.post('/allfoods', async(req, res)=>{
       const newFood = req.body;
       const result = await foodCollection.insertOne(newFood);
+      res.send(result);
+    })
+    // add one request
+    app.post('/requests', async(req, res)=>{
+      const newFood = req.body;
+      const result = await requestCollection.insertOne(newFood);
       res.send(result);
     })
 
