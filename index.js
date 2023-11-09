@@ -63,8 +63,9 @@ app.get('/ownrequests', async (req, res) => {
 
 
    // show specific food detail for manage data
-   app.get('/allrequests/:foodId', async (req, res) => {
+   app.get('/allrequests/foods/:foodId', async (req, res) => {
     const foodId = req.params.foodId;
+    console.log(foodId);
     const query = { foodId }; // Use foodId to query for the specific food
     const result = await requestCollection.find(query).toArray();
     
@@ -105,6 +106,22 @@ app.get('/ownrequests', async (req, res) => {
     app.post('/allrequests', async(req, res)=>{
       const newFood = req.body;
       const result = await requestCollection.insertOne(newFood);
+      res.send(result);
+    })
+
+    // update status from manage request page
+    app.patch('/allrequests/:id', async(req, res)=>{
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)}
+      const updatedStatusOfFood = req.body;
+      console.log(updatedStatusOfFood);
+      const updatedDoc = {
+        $set: {
+          status: updatedStatusOfFood.status
+        }
+      };
+
+      const result = await requestCollection.updateOne(filter, updatedDoc)
       res.send(result);
     })
 
