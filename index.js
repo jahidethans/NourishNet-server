@@ -36,6 +36,20 @@ async function run() {
         const result = await cursor.toArray();
         res.send(result);
     })
+    // show all requested foods
+    app.get('/allrequests', async(req, res)=>{
+        const cursor = requestCollection.find();
+        const result = await cursor.toArray();
+        res.send(result);
+    })
+
+    // get one requested food by id
+    app.get('/allrequests/:id', async(req, res)=>{
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id)};
+      const result = await requestCollection.findOne(query);
+      res.send(result)
+    })
 
    // show user-based requested foods
 app.get('/ownrequests', async (req, res) => {
@@ -46,25 +60,20 @@ app.get('/ownrequests', async (req, res) => {
   const result = await requestCollection.find(query).toArray();
   res.send(result);
 });
-   // show user-based requested foods for managing
-app.get('/requests', async (req, res) => {
-  let query = {};
-  if (req.query?.donatorEmail) {
-    query = { donatorEmail: req.query.donatorEmail };
-  }
-  const result = await requestCollection.find(query).toArray();
-  res.send(result);
-});
 
-// show each item to manage sperately
-app.get('/requests/:id', async(req, res)=>{
-  const id = req.params.id;
-  if (id) {
-    query = { foodId: id };
-  } 
-  const result = await requestCollection.find(query).toArray();
-  res.send(result);
-})
+
+   // show specific food detail for manage data
+   app.get('/allrequests/:foodId', async (req, res) => {
+    const foodId = req.params.foodId;
+    const query = { foodId }; // Use foodId to query for the specific food
+    const result = await requestCollection.find(query).toArray();
+    
+    
+      res.send(result);
+    
+  });
+
+
 
 
     // show specific food detail
@@ -93,11 +102,22 @@ app.get('/requests/:id', async(req, res)=>{
     })
     
     // add one request
-    app.post('/requests', async(req, res)=>{
+    app.post('/allrequests', async(req, res)=>{
       const newFood = req.body;
       const result = await requestCollection.insertOne(newFood);
       res.send(result);
     })
+
+    // delete from my requests
+    app.delete('/allrequests/:id', async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const query = { _id: new ObjectId(id) };
+      const result = await requestCollection.deleteOne(query);
+      res.send(result);
+      
+    });
+    
 
 
     // Send a ping to confirm a successful connection
